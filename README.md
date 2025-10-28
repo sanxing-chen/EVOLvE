@@ -360,6 +360,30 @@ If you find EVOLvE useful in your research, please consider citing our paper:
 }
 ```
 
+## Other Follow-Up Works
+
+Schmied, Thomas, et al. used policy gradient to learn an exploration strategy (4/22/2025).
+
+```bibtex
+@article{schmied2025llms,
+  title={Llms are greedy agents: Effects of rl fine-tuning on decision-making abilities},
+  author={Schmied, Thomas and Bornschein, J{\"o}rg and Grau-Moya, Jordi and Wulfmeier, Markus and Pascanu, Razvan},
+  journal={arXiv preprint arXiv:2504.16078},
+  year={2025}
+}
+```
+
+Chen, Sanxing, et al. applied GAE to compute token-level advantage scores and compared algorithm distillation (SFT) and policy gradient (RL) methods for teaching exploration behaviors.
+
+```bibtex
+@article{chen2025greedy,
+  title={When Greedy Wins: Emergent Exploitation Bias in Meta-Bandit LLM Training},
+  author={Chen, Sanxing and Chen, Xiaoyin and Huang, Yukun and Xie, Roy and Dhingra, Bhuwan},
+  journal={arXiv preprint arXiv:2509.24923},
+  year={2025}
+}
+```
+
 ## 📄 License
 
 This project is licensed under the [LICENSE NAME] - see the [LICENSE](LICENSE) file for details.

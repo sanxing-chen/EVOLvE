@@ -373,7 +373,7 @@ Schmied, Thomas, et al. used policy gradient to learn an exploration strategy (4
 }
 ```
 
-Chen, Sanxing, et al. applied GAE to compute token-level advantage scores and compared algorithm distillation (SFT) and policy gradient (RL) methods for teaching exploration behaviors.
+Chen, Sanxing, et al. applied GAE to compute token-level advantage scores and compared algorithm distillation (SFT) and policy gradient (RL) methods for teaching exploration behaviors (9/29/2025).
 
 ```bibtex
 @article{chen2025greedy,

@@ -262,17 +262,17 @@ class MovieLensCBEnv(gym.Env):
     def __init__(
         self,
         task_name: str = "100k-ratings",
-        num_arms: int = 10,
-        horizon: int = 50,
-        rank_k: int = 10,
-        mode: str = "eval",
+        n_arms: int = 5,
+        max_steps: int = 50,
+        rank_k: int = 5,
+        mode: str = "train",
         seed: Optional[int] = None,
         linucb_alpha: float = 0.5,
     ) -> None:
         super().__init__()
 
-        self.n_arms = num_arms
-        self.horizon = horizon
+        self.n_arms = n_arms
+        self.horizon = max_steps
         self.rank_k = rank_k
         self.mode = mode
         self.seed_value = seed
@@ -280,8 +280,8 @@ class MovieLensCBEnv(gym.Env):
         # Core bandit and verbal helper share the same underlying bandit
         self.core_bandit = MovieLens(
             task_name=task_name,
-            num_arms=num_arms,
-            horizon=horizon,
+            num_arms=n_arms,
+            horizon=max_steps,
             rank_k=rank_k,
             mode=mode,
             seed=seed,
@@ -296,7 +296,7 @@ class MovieLensCBEnv(gym.Env):
         self.observation_space = spaces.Discrete(1)  # dummy; see info['raw_prompt']
 
         # State and textual interaction history
-        self._state = None  # type: Optional[Any]
+        self._state = None 
         self.steps = 0
         self.counts = np.zeros(self.n_arms, dtype=int)
         self.last_info: Dict[str, Any] = {}
@@ -337,14 +337,23 @@ class MovieLensCBEnv(gym.Env):
             )
         return "".join(lines)
 
-    def _make_raw_prompt(self, state: Any) -> str:
+    def _make_raw_prompt(self, state: Any) :
         """Builds a raw prompt string identical to LLMCBAgentBase.act composition."""
         # Ensure feature_text available on state
         state.feature_text = self.verbal.verbalize_state(state)
         task_instruction = self.verbal.get_task_instruction()
         history_context = self.decision_context_start.format(len(self._interactions)) + self._history_snippet()
         query = self.verbal.get_query_prompt(state)
-        return task_instruction + history_context + query
+        return [
+            {
+                "role": "system",
+                "content": task_instruction
+            },
+            {
+                "role": "user",
+                "content": history_context + query
+            }
+        ]
 
     # ---- gym API ----
     def reset(self, seed: Optional[int] = None):

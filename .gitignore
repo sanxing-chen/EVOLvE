@@ -1,6 +1,8 @@
 .idea/
 *.txt
+*.png
 tests/tensorflow_datasets/
+tensorflow_datasets/
 .DS_Store
 
 # Byte-compiled / optimized / DLL files

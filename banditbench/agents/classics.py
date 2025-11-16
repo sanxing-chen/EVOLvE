@@ -168,7 +168,8 @@ class LinUCBAgent(CBAgent, SampleBase):
                 candidate_arms.append(arm_index)
 
         # Choose based on candidate_arms randomly (tie breaker)
-        chosen_arm_index = np.random.choice(candidate_arms)
+        # chosen_arm_index = np.random.choice(candidate_arms)
+        chosen_arm_index = candidate_arms[0]
 
         return int(chosen_arm_index)
 

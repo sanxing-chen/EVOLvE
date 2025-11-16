@@ -11,8 +11,6 @@ install_requires = [
     "pydantic==2.10.5",
     "litellm",
     "pandas",
-    "tensorflow_datasets==4.9.3",
-    "tensorflow==2.17.0",
     "ml-dtypes==0.3.1",
     "matplotlib",
     "scipy"

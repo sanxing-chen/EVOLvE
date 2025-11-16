@@ -24,22 +24,20 @@ class MovieLensScenario(ScenarioUtil, CBScenario):
     max_reward = '5'
 
     base_description = dedent(
-        """You are an AI movie recommendation assistant for a streaming platform powered by a bandit algorithm that offers a wide variety of films from different studios and genres.
+        """You are an AI movie recommendation assistant for a streaming platform powered by a bandit algorithm that offers a wide variety of films.
           There are {} unique movies you can recommend, named {}
           When a user visits the streaming platform, you assess their demographic description to choose a movie to suggest.
           You aim to match the user with movies they are most likely to watch and enjoy.
           Each time a user watches a recommended movie, you adjust your recommendation algorithms to better predict and meet future user preferences.
-          Your goal is to enhance the user's viewing experience by providing personalized and engaging movie suggestions.
         """
     )
 
     detailed_description = dedent(
-        """You are an AI movie recommendation assistant for a streaming platform powered by a bandit algorithm that offers a wide variety of films from different studios and genres.
+        """You are an AI movie recommendation assistant for a streaming platform powered by a bandit algorithm that offers a wide variety of films.
           There are {} unique movies you can recommend, named {}
           When a user visits the streaming platform, you assess their demographic description to choose a movie to suggest.
           You aim to match the user with movies they are most likely to watch and enjoy.
           Each time a user watches a recommended movie, you adjust your recommendation algorithms to better predict and meet future user preferences.
-          Your goal is to enhance the user's viewing experience by providing personalized and engaging movie suggestions.
           
           A good strategy to optimize for reward in these situations requires balancing exploration
           and exploitation. You need to explore to try out different movies and find those
@@ -48,9 +46,7 @@ class MovieLensScenario(ScenarioUtil, CBScenario):
         """
     )
 
-    query_prompt = ("\n\nYou have a new user: PLEASE"
-                    " RESPOND ONLY WITH A CHOICE of MOVIES LISTED ABOVE AND NO TEXT"
-                    " EXPLANATION.\n\nContext: {feature}\n")
+    query_prompt = ("\n\nYou have a new user: \nContext: {feature}\nWhich movie should be recommended next? Show your reasoning in <think> </think> tags and your final answer in <answer> </answer> tags.")
 
     fewshot_prompt = ('Here are some examples of optimal actions for different users.'
                       ' Use them as hints to help you come up with better actions.\n')
@@ -59,13 +55,14 @@ class MovieLensScenario(ScenarioUtil, CBScenario):
 
     def get_instruction(self, version="base"):
         """We add the few-shot examples in here"""
+        formatted_actions = '\n' + '\n'.join(f'{i+1}. {movie}' for i, movie in enumerate(self.action_names)) + '\n'
         if version == 'base':
             prompt = self.base_description.format(
-                len(self.action_names), '\n' + ',\n'.join(self.action_names) + '\n'
+                len(self.action_names), formatted_actions
             )
         elif version == 'detailed':
             prompt = self.detailed_description.format(
-                len(self.action_names), '\n' + ',\n'.join(self.action_names) + '\n'
+                len(self.action_names), formatted_actions
             )
         else:
             raise ValueError(f'Unknown description version {version}')
@@ -78,7 +75,5 @@ class MovieLensScenario(ScenarioUtil, CBScenario):
         prompt = self.query_prompt.format(feature=state.feature_text)
         if side_info is not None:
             prompt += f"Side Information for decision making:\n{side_info}"
-
-        prompt += "Action: "
 
         return prompt

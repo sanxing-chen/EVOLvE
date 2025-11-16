@@ -292,7 +292,7 @@ class MovieLensVerbal(VerbalBandit):
         verbal_instruction = self.bandit_scenario.get_instruction(self.instruction_type)
         return verbal_instruction
 
-    def get_actions_text(self, genre=True):
+    def get_actions_text(self, genre=False):
         """
         this function returns "options" for the scenario:
         "Movie_Name (year) (genre1|genre2|...)"
@@ -411,8 +411,7 @@ class MovieLensVerbal(VerbalBandit):
         user_description_full = """ and live in {county} county, {state}."""
 
         feature_text = (
-            ' The user has some numerical values that represent'
-            ' their true implicit preference or taste for all movies: {}.'
+            ' User preference vector: {}.'
         )
 
         def get_gender(is_male):
@@ -423,6 +422,9 @@ class MovieLensVerbal(VerbalBandit):
             age_gender_occupation_text = self.generate_occupation_sentence(
                 occupation, int(raw_age), int(age_bucket), get_gender(is_male)
             )
+
+            # format obs values to 2 decimal places for readability
+            formatted_values = "[" + ", ".join(f"{n:.2f}" for n in obs.tolist()) + "]"
 
             if safe_decode(zip_code) in self.zipdata:
                 county, state = self.zipdata[safe_decode(zip_code)]
@@ -436,7 +438,7 @@ class MovieLensVerbal(VerbalBandit):
                     county=county,
                     state=state,
                 )
-                        + feature_text.format(str([n for n in obs.tolist()]))
+                        + feature_text.format(formatted_values)
                 )
             else:
                 return (
@@ -448,7 +450,7 @@ class MovieLensVerbal(VerbalBandit):
                     occupation=safe_decode(occupation),
                     zip_code=safe_decode(zip_code),
                 )
-                        + feature_text.format(str([n for n in obs.tolist()]))
+                        + feature_text.format(formatted_values)
                 )
 
         description = format_description(user_features)

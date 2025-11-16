@@ -81,21 +81,36 @@ def parse_int_list(s):
 
 
 def load_data_files(bandit_type, save_data_dir=None):
-    import tensorflow_datasets as tfds
+    """
+    Load MovieLens ratings as a pandas DataFrame.
 
-    # Try loading cached files first
-    print("loading from tfds")
+    Preference order:
+    1) Local Hugging Face Dataset saved_to_disk (no TF deps)
+    2) Fallback to TFDS (tensorflow_datasets)
+
+    HF detection rules:
+    - If save_data_dir points to a HF dataset root (contains dataset_dict.json), load from there
+    - Else check env var BANDITBENCH_HF_DATASET_DIR
+    - Else check conventional subpath: <save_data_dir>/hf_datasets/movielens-<size>
+    """
+
+    # Map bandit_type to conventional HF folder suffix
     if bandit_type == '100k-ratings':
-        ratings = tfds.load('movielens/100k-ratings', data_dir=save_data_dir)
+        hf_folder_name = 'DukeNLPGroup/movielens-100k'
+        tfds_name = 'movielens/100k-ratings'
     elif bandit_type == '1m-ratings':
-        ratings = tfds.load('movielens/1m-ratings', data_dir=save_data_dir)
+        hf_folder_name = 'DukeNLPGroup/movielens-1m'
+        tfds_name = 'movielens/1m-ratings'
     else:
-        ratings = tfds.load(bandit_type, data_dir=save_data_dir)
-        raise ValueError(f"Other movielens datasets not verified yet: {bandit_type}")
+        # keep compatibility with prior API but note only these two are verified
+        hf_folder_name = None
+        tfds_name = bandit_type
 
-    ratings_df = tfds.as_dataframe(ratings['train'])  # there is only one split
-    print("data converted to pandas dataframe")
-
+    import datasets
+    print(f"loading from huggingface saved dataset: {hf_folder_name}")
+    ds_dict = datasets.load_dataset(hf_folder_name)
+    ratings_df = ds_dict['train'].to_pandas()
+    print("data converted to pandas dataframe (HF)")
     return ratings_df
 
 

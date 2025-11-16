@@ -8,7 +8,7 @@ with open(os.path.join(here, "banditbench/version.py"), encoding="utf8") as fp:
 __version__ = version["__version__"]
 
 install_requires = [
-    "pydantic==2.10.5",
+    "pydantic==2.11.7",
     "litellm",
     "pandas",
     "ml-dtypes==0.3.1",

@@ -46,7 +46,7 @@ class MovieLensScenario(ScenarioUtil, CBScenario):
         """
     )
 
-    query_prompt = ("\n\nYou have a new user: \nContext: {feature}\nWhich movie (id) should be recommended next? Show your reasoning in <think> </think> tags and your final answer in <answer> Movie n </answer> tags.")
+    query_prompt = ("\n\nYou have a new user: \nContext: {feature}\nWhich movie (id) should be recommended next? Show your reasoning between <think> </think> tags and the recommended movie index between <answer> Movie index </answer> tags.")
 
     fewshot_prompt = ('Here are some examples of optimal actions for different users.'
                       ' Use them as hints to help you come up with better actions.\n')
